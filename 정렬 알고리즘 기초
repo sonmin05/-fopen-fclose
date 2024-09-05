@@ -1,0 +1,297 @@
+문제: 정수를 5개를 배열에 입력받고 오름차순으로 정렬하는 프로그램을 만들어라
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(void)
+{
+	int i;
+	int j;
+	int temp;
+	int num[5] = { 0, };
+
+	printf("값을 5개 입력해주세요: ");
+	for (i = 0; i < 5; ++i)
+	{
+		scanf("%d", &num[i]);
+	}
+
+	for (i = 0; i < 5; ++i)
+	{
+		for (j = 0; j < 5; ++j)
+		{
+			if (num[i] < num[j])
+			{
+				temp = num[i];
+				num[i] = num[j];
+				num[j] = temp;
+			}
+		}
+	}
+	printf("정렬 결과는: ");
+	for (i = 0; i < 5; ++i)
+	{
+		printf("%d", num[i]);
+	}
+	return 0;
+}
+
+------------------------------------------------------------------------------
+
+문제: 정수를 5개를 배열에 입력받고 내림차순으로 정렬하는 프로그램을 만들어라
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(void)
+{
+	int i;
+	int j;
+	int temp;
+	int num[5] = { 0, };
+
+	printf("값을 5개 입력해주세요: ");
+	for (i = 0; i < 5; ++i)
+	{
+		scanf("%d", &num[i]);
+	}
+
+	for (i = 0; i < 5; ++i)
+	{
+		for (j = 0; j < 5; ++j)
+		{
+			if (num[i] > num[j])
+			{
+				temp = num[i];
+				num[i] = num[j];
+				num[j] = temp;
+			}
+		}
+	}
+	printf("정렬 결과는: ");
+	for (i = 0; i < 5; ++i)
+	{
+		printf("%d", num[i]);
+	}
+	return 0;
+}
+
+----------------------------------------------------------------------
+
+파일을 읽어서 옵션을 입력 받아서 오름 차순 내림 차순으로 정렬 후 그 결과를 화면에 표시하고 파일로 저장
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(void) {
+    int temp;  
+    int num[100] = { 0, }; 
+    int n = 0;
+    int i;
+    int j;
+    //FILE* fp = fopen("ascending_order.txt", "w");  
+	FILE* fp = fopen("descending_order.txt", "w");
+
+
+    if (fp == NULL) {
+        printf("파일을 열 수 없습니다.\n");
+        return 1;
+    }
+
+	printf("값을 5개 입력해주세요: ");
+	for (i = 0; i < 5; ++i)
+	{
+		scanf("%d", &num[i]);
+	}
+
+	for (i = 0; i < 5; ++i)
+	{
+		for (j = 0; j < 5; ++j)
+		{
+			/*
+			if (num[i] < num[j])
+			{
+				temp = num[i];
+				num[i] = num[j];
+				num[j] = temp;
+			}
+			*/
+			if (num[i] > num[j])
+			{
+				temp = num[i];
+				num[i] = num[j];
+				num[j] = temp;
+			}
+		}
+	}
+	printf("정렬 결과는: ");
+	for (i = 0; i < 5; ++i)
+	{
+		printf("%d", num[i]);
+	}
+
+	for (i = 0; i < 5; ++i)
+	{
+		fprintf(fp, "%d", num[i]);
+	}
+	fclose(fp);
+
+    return 0;
+}
+
+-------------------------------------------------------------
+
+함수 이용 코드
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void ascending_order(int num[], int size) {
+    int temp;
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = i + 1; j < size; ++j) {
+            if (num[i] > num[j]) {
+                temp = num[i];
+                num[i] = num[j];
+                num[j] = temp;
+            }
+        }
+    }
+}
+
+void descending_order(int num[], int size) {
+    int temp;
+    int i;
+    int j;
+
+    for (i = 0; i < size - 1; ++i) {
+        for (j = i + 1; j < size; ++j) {
+            if (num[i] < num[j]) {
+                temp = num[i];
+                num[i] = num[j];
+                num[j] = temp;
+            }
+        }
+    }
+}
+
+void save_file(const char* filename, int num[], int size) {
+    FILE* fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("파일을 열 수 없습니다.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        fprintf(fp, "%d ", num[i]);
+    }
+
+    fclose(fp);
+}
+
+int main(void) {
+    int num[100];
+    int size = 5;
+    int i;
+
+    printf("값을 5개 입력해주세요: ");
+    for (i = 0; i < size; ++i) {
+        scanf("%d", &num[i]);
+    }
+
+    // 오름차순 정렬 및 파일 저장
+    ascending_order(num, size);
+    save_file("ascending_order.txt", num, size);
+
+    // 내림차순 정렬 및 파일 저장
+    descending_order(num, size);
+    save_file("descending_order.txt", num, size);
+
+    printf("정렬 결과가 텍스트 파일로 저장되었습니다.\n");
+
+    return 0;
+}
+
+------------------------------------------------------------------------
+
+오름차순, 내림차순 정리 선택 코드 추가
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void ascending_order(int num[], int size) {
+    int temp;
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = i + 1; j < size; ++j) {
+            if (num[i] > num[j]) {
+                temp = num[i];
+                num[i] = num[j];
+                num[j] = temp;
+            }
+        }
+    }
+}
+
+void descending_order(int num[], int size) {
+    int temp;
+    int i;
+    int j;
+
+    for (i = 0; i < size - 1; ++i) {
+        for (j = i + 1; j < size; ++j) {
+            if (num[i] < num[j]) {
+                temp = num[i];
+                num[i] = num[j];
+                num[j] = temp;
+            }
+        }
+    }
+}
+
+void save_file(const char* filename, int num[], int size) {
+    FILE* fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("파일을 열 수 없습니다.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        fprintf(fp, "%d ", num[i]);
+    }
+
+    fclose(fp);
+}
+
+int main(void) {
+    int num[100];
+    int size = 5;
+    int i;
+    int c_num;
+
+    printf("값을 5개 입력해주세요: ");
+    for (i = 0; i < size; ++i) {
+        scanf("%d", &num[i]);
+    }
+
+    printf("오름차순으로 정리하시겠습니까[1] /  내림차순으로 정리하시겠습니까[2]\n");
+    scanf("%d", &c_num);
+    
+    if (c_num == 1)
+    {
+        // 오름차순 정렬 및 파일 저장
+        ascending_order(num, size);
+        save_file("ascending_order.txt", num, size);
+    }
+    else if (c_num == 2)
+    {
+        // 내림차순 정렬 및 파일 저장
+        descending_order(num, size);
+        save_file("descending_order.txt", num, size);
+    }
+
+
+
+    printf("정렬 결과가 텍스트 파일로 저장되었습니다.\n");
+
+    return 0;
+}
