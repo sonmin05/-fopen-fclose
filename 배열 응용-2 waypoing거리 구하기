@@ -1,0 +1,66 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <math.h>
+
+#define MAX_POINTS 100
+
+int main() 
+{
+    double X[MAX_POINTS], Y[MAX_POINTS], Angle[MAX_POINTS];
+    double X_ref[MAX_POINTS], Y_ref[MAX_POINTS], Dist[MAX_POINTS];
+    int count = 0;
+
+    // 파일에서 데이터 읽기
+    FILE *inputFile = fopen("waypoint.txt", "r");
+    if (inputFile == NULL) 
+    {
+        printf("Error opening file");
+        return -1;
+    }
+
+    while (fscanf(inputFile, "%lf %lf %lf", &X[count], &Y[count], &Angle[count]) == 3) 
+    {
+        count++;
+        if (count >= MAX_POINTS) 
+        break;
+    }
+    fclose(inputFile);
+
+    // 첫 번째 좌표를 기준으로 상대 좌표 계산
+    for (int i = 0; i < count; i++) 
+    {
+        X_ref[i] = X[i] - X[0];
+        Y_ref[i] = Y[i] - Y[0];
+    }
+
+    // 거리 계산
+    Dist[0] = 0.0;
+    for (int i = 1; i < count; i++) 
+    {
+        Dist[i] = sqrt(pow(X[i] - X[i-1], 2) + pow(Y[i] - Y[i-1], 2));
+    }
+
+    // 결과 출력
+    printf("X\tY\tAngle\tX_ref\tY_ref\tDist\n");
+    for (int i = 0; i < count; i++) 
+    {
+        printf("%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n", X[i], Y[i], Angle[i], X_ref[i], Y_ref[i], Dist[i]);
+    }
+
+    // 거리 데이터를 파일로 저장
+    FILE *outputFile = fopen("distances.txt", "w");
+    if (outputFile == NULL) 
+    {
+        printf("Error opening file");
+        return -1;
+    }
+
+    for (int i = 0; i < count; i++) 
+    {
+        fprintf(outputFile, "%lf\n", Dist[i]);
+    }
+    fclose(outputFile);
+
+    return 0;
+}
